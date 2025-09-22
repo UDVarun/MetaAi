@@ -1,6 +1,6 @@
 "use client";
 
-import { email, z} from "zod";
+import { z } from "zod";
 import { OctagonAlertIcon } from "lucide-react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertTitle } from "@/components/ui/alert";
+import {FaGithub, FaGoogle} from "react-icons/fa"
 import {
     Form,
     FormControl,
@@ -18,8 +19,9 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { use, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -40,24 +42,44 @@ export const SignInView = () => {
     const onSubmit =  (data: z.infer<typeof formSchema>) => {
         setError(null);
         setPending(true);
-        
         authClient.signIn.email(
             {
                 email: data.email,
                 password: data.password,
+                  callbackURL: "/",
             },
             {
                 onSuccess: () => {
-                     setPending(false);
-                     router.push("/");
+                    setPending(false);
+                    router.push("/");
                 },
                 onError: ({error}) => {
                     setError(error.message);
                 }
             }
         );
-       
     };
+
+    const onSocial =  (provider: "google" | "github") => {
+        setError(null);
+        setPending(true);
+        
+        authClient.signIn.social(
+            {
+                provider: provider,
+                callbackURL: "/",
+            },
+            {
+                onSuccess: () => {
+                     setPending(false);
+                },
+                onError: ({error}) => {
+                    setError(error.message);
+                }
+            }
+        );
+    };
+
     return (
         <div className="flex flex-col gap-6">
             <Card className="overflow-hidden p-0">
@@ -129,18 +151,20 @@ export const SignInView = () => {
                                     <Button 
                                     disabled={pending}
                                     variant="outline" 
+                                  onClick={() => {onSocial("google")}}
                                     type="button" 
                                     className="w-full"
                                     >
-                                    Google
+                                    <FaGoogle />
                                     </Button>
                                     <Button 
                                     disabled={pending}
                                     variant="outline" 
+                                     onClick={() => {onSocial("github")}}
                                     type="button" 
                                     className="w-full"
                                     >
-                                        GitHub
+                                    <FaGithub />
                                     </Button>
                                 </div>
                                 <div className="text-center text-sm" >
