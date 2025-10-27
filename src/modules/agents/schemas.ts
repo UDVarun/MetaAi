@@ -1,0 +1,9 @@
+import { db } from "@/db";
+import { agents } from "@/db/schema";
+import { baseProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import {z} from "zod";
+export const agentsInsertSchema = z.object({
+    name: z.string().min(1,{ message: "Name is required" }),
+    instructions: z.string().min(1,{message:"Instructions are Required"})
+})
+
