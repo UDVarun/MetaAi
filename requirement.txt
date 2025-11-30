@@ -14,4 +14,3 @@ npm install @tanstack/react-table --legacy-peer-deps
 
 npm i nuqs --legacy-peer-deps
 
-14: Agent Page
